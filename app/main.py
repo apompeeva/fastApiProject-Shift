@@ -1,22 +1,16 @@
-from fastapi import FastAPI, Depends
-from fastapi_users import fastapi_users, FastAPIUsers
+from fastapi import FastAPI
 
 from app.auth.auth import auth_backend
-from app.auth.database import User
-from app.auth.manager import get_user_manager
-from app.endpoints import router
-from app.schemas import UserRead, UserCreate
+from app.auth.manager import fastapi_users
+from app.auth.superuser import create_superuser
+from app.endpoints.salary_data import salary_router
 
-
-fastapi_users = FastAPIUsers[User, int](
-    get_user_manager,
-    [auth_backend],
-)
+from app.schemas.schemas import UserRead, UserCreate
 
 
 app = FastAPI()
 
-app.include_router(router)
+app.include_router(salary_router, tags=["salary"])
 
 app.include_router(
     fastapi_users.get_auth_router(auth_backend),
@@ -30,12 +24,11 @@ app.include_router(
     tags=["auth"],
 )
 
-current_user = fastapi_users.current_user()
 
+@app.on_event('startup')
+async def startup():
+    await create_superuser()
 
-@app.get("/protected-route")
-async def protected_route(user: User = Depends(current_user)):
-    return f"Hello, {user.email}"
 
 
 

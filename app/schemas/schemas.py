@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, field_validator
+from pydantic import BaseModel, EmailStr
 from datetime import date
 from fastapi_users import schemas, models
 from typing import Optional
@@ -22,12 +22,12 @@ class UserCreate(schemas.BaseUserCreate):
     is_verified: Optional[bool] = False
 
 
-class SalaryInfo(BaseModel):
+class SalaryData(BaseModel):
     current_salary: int
     increase_date: date
 
 
-class SalaryInfoCreate(SalaryInfo):
+class SalaryDataCreate(SalaryData):
     user_id: int
 
 
