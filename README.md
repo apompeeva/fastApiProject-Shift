@@ -76,7 +76,7 @@
     ```bash
     alembic upgrade head
     ```
-5. Запустить проекта
+5. Запустить проект
     ```bash
     uvicorn app.main:app --reload
     ```
