@@ -27,8 +27,8 @@ async def override_get_async_session() -> AsyncGenerator[AsyncSession, None]:
 app.dependency_overrides[get_async_session] = override_get_async_session
 
 
-@pytest.fixture(autouse=True, scope='session')
-async def prepare_database():
+@pytest.fixture(autouse=True, scope="module")
+async def prepare_database(event_loop):
     async with engine_test.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     yield
@@ -36,16 +36,16 @@ async def prepare_database():
         await conn.run_sync(Base.metadata.drop_all)
 
 
-# # SETUP
-# @pytest.fixture(scope='session')
-# def event_loop(request):
-#     """Create an instance of the default event loop for each test case."""
-#     loop = asyncio.get_event_loop_policy().new_event_loop()
-#     yield loop
-#     loop.close()
+# SETUP
+@pytest.fixture(scope="session")
+def event_loop(request):
+    """Create an instance of the default event loop for each test case."""
+    loop = asyncio.get_event_loop_policy().new_event_loop()
+    yield loop
+    loop.close()
 
 
 @pytest.fixture(scope="session")
 async def ac() -> AsyncGenerator[AsyncClient, None]:
-    async with AsyncClient(app=app, base_url="http://test") as ac:
+    async with AsyncClient(app=app, base_url="https://test") as ac:
         yield ac

@@ -25,11 +25,6 @@ app.include_router(
 )
 
 
-@app.on_event('startup')
+@app.on_event("startup")
 async def startup():
     await create_superuser()
-
-
-
-
-

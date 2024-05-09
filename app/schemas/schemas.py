@@ -29,5 +29,3 @@ class SalaryData(BaseModel):
 
 class SalaryDataCreate(SalaryData):
     user_id: int
-
-
